@@ -3,6 +3,9 @@ package io.github.yesminmarie.mslearningcourse.service.impl;
 import io.github.yesminmarie.mslearningcourse.controller.input.CourseInput;
 import io.github.yesminmarie.mslearningcourse.data.CourseRepository;
 import io.github.yesminmarie.mslearningcourse.domain.Course;
+import io.github.yesminmarie.mslearningcourse.exceptions.CourseAlreadyExistsException;
+import io.github.yesminmarie.mslearningcourse.exceptions.CourseLengthException;
+import io.github.yesminmarie.mslearningcourse.exceptions.CourseNotFoundException;
 import io.github.yesminmarie.mslearningcourse.service.CourseService;
 import io.github.yesminmarie.mslearningcourse.service.result.CourseResult;
 import io.github.yesminmarie.mslearningcourse.service.result.CourseResultId;
@@ -30,7 +33,7 @@ public class CourseServiceImpl implements CourseService {
     public CourseResultId createCourse(CourseInput courseInput) {
 
         if(courseInput.getCourseName().length() <= 3){
-            throw new IllegalArgumentException("Course name less than three characters!");
+            throw new CourseLengthException();
         }
         Optional<Course> existsCourse = courseRepository.findByCourseName(courseInput.getCourseName());
         if(existsCourse.isEmpty()){
@@ -41,15 +44,14 @@ public class CourseServiceImpl implements CourseService {
             courseRepository.save(course);
             return modelMapper.map(course, CourseResultId.class);
         }
-        throw new IllegalArgumentException("Course already exists!");
+        throw new CourseAlreadyExistsException();
     }
 
     @Override
     public CourseResult getCourseId(UUID courseId) {
         Optional<Course> course = Optional.ofNullable(courseRepository.findByCourseId(courseId)
                 .orElseThrow(() ->
-                        new ResponseStatusException(HttpStatus.NOT_FOUND,
-                                "Course not found.")));
+                        new CourseNotFoundException()));
         return modelMapper.map(course, CourseResult.class);
     }
 

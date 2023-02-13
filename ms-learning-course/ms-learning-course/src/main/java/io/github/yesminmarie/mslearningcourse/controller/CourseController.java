@@ -24,7 +24,9 @@ public class CourseController {
     @PostMapping
     @Operation(description = "Create a new course")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "Created course")
+            @ApiResponse(responseCode = "201", description = "Created course"),
+            @ApiResponse(responseCode = "400", description = "Course already exists!"),
+            @ApiResponse(responseCode = "400", description = "Course name less than three characters!")
     })
     public ResponseEntity<CourseResultId> createCourse(@RequestBody CourseInput courseInput){
         return ResponseEntity.status(HttpStatus.CREATED).body(courseService.createCourse(courseInput));
