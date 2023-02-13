@@ -1,7 +1,6 @@
 package io.github.yesminmarie.mslearningcourse.controller;
 
 import io.github.yesminmarie.mslearningcourse.controller.input.CourseInput;
-import io.github.yesminmarie.mslearningcourse.domain.Course;
 import io.github.yesminmarie.mslearningcourse.service.CourseService;
 import io.github.yesminmarie.mslearningcourse.service.result.CourseResult;
 import io.github.yesminmarie.mslearningcourse.service.result.CourseResultId;
@@ -36,7 +35,8 @@ public class CourseController {
     @GetMapping(params = "courseId")
     @ApiOperation("Get course by Id")
     @ApiResponses({
-            @ApiResponse(code = 200, message = "Course found")
+            @ApiResponse(code = 200, message = "Course found"),
+            @ApiResponse(code = 404, message = "Course not found")
     })
     public ResponseEntity<CourseResult> getCourseId(@RequestParam("courseId") UUID courseId){
         return ResponseEntity.ok(courseService.getCourseId(courseId));
