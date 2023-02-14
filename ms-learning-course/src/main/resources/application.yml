@@ -1,0 +1,11 @@
+spring:
+  application:
+    name: courses
+  data:
+    mongodb:
+      uri: mongodb://localhost:27017/courses
+  mvc:
+    pathmatch:
+      matching-strategy: ant-path-matcher
+server:
+  port: 8081
