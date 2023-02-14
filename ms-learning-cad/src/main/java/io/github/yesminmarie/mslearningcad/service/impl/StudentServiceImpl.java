@@ -7,6 +7,7 @@ import io.github.yesminmarie.mslearningcad.data.StudentRepository;
 import io.github.yesminmarie.mslearningcad.domain.Student;
 import io.github.yesminmarie.mslearningcad.exception.CourseNotFoundException;
 import io.github.yesminmarie.mslearningcad.exception.MicroservicesComunicationException;
+import io.github.yesminmarie.mslearningcad.service.EventService;
 import io.github.yesminmarie.mslearningcad.service.StudentService;
 import io.github.yesminmarie.mslearningcad.service.result.CreateStudentResult;
 import lombok.RequiredArgsConstructor;
@@ -22,7 +23,7 @@ import java.util.UUID;
 public class StudentServiceImpl implements StudentService {
 
     private final StudentRepository studentRepository;
-
+    private final EventService eventService;
     private final CourseControllerClient courseControllerClient;
     private final ModelMapper modelMapper;
     @Override
@@ -36,6 +37,7 @@ public class StudentServiceImpl implements StudentService {
             student.setStatus(true);
             student.setCreatedOn(LocalDate.now());
             studentRepository.save(student);
+            eventService.sendEventToKafka(student);
             return modelMapper.map(student, CreateStudentResult.class);
 
         }catch (FeignException.FeignClientException ex){
