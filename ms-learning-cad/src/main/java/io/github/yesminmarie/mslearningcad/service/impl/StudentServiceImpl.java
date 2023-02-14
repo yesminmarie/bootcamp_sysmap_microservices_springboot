@@ -2,6 +2,7 @@ package io.github.yesminmarie.mslearningcad.service.impl;
 
 import feign.FeignException;
 import io.github.yesminmarie.mslearningcad.clients.CourseControllerClient;
+import io.github.yesminmarie.mslearningcad.clients.dto.CourseResult;
 import io.github.yesminmarie.mslearningcad.controller.input.CreateStudentInput;
 import io.github.yesminmarie.mslearningcad.data.StudentRepository;
 import io.github.yesminmarie.mslearningcad.domain.Student;
@@ -10,10 +11,13 @@ import io.github.yesminmarie.mslearningcad.exception.MicroservicesComunicationEx
 import io.github.yesminmarie.mslearningcad.service.EventService;
 import io.github.yesminmarie.mslearningcad.service.StudentService;
 import io.github.yesminmarie.mslearningcad.service.result.CreateStudentResult;
+import io.github.yesminmarie.mslearningcad.service.result.GetStudentResult;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
 import java.util.UUID;
@@ -47,5 +51,17 @@ public class StudentServiceImpl implements StudentService {
             }
             throw new MicroservicesComunicationException(ex.getMessage(), status);
         }
+    }
+
+    @Override
+    public GetStudentResult getStudentById(UUID studentId) {
+        Student student = studentRepository
+                .findByStudentId(studentId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Student not found!"));
+        ResponseEntity<CourseResult> course = courseControllerClient.getCourseId(student.getCourseId());
+        GetStudentResult studentResult = modelMapper.map(student, GetStudentResult.class);
+        studentResult.setFullName(student.getFirstName().concat(" " + student.getLastName()));
+        studentResult.setCourseName(course.getBody().getCourseName());
+        return studentResult;
     }
 }
