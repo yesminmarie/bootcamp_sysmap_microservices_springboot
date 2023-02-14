@@ -1,11 +1,12 @@
 spring:
   application:
-    name: ms-learning-course
+    name: ms-learning-cad
   data:
     mongodb:
-      uri: mongodb://localhost:27017/ms-learning-course
+      uri: mongodb://localhost:27017/ms-learning-cad
   mvc:
     pathmatch:
       matching-strategy: ant-path-matcher
 server:
-  port: 8081
+  port: 8082
+
