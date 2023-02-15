@@ -21,6 +21,7 @@ public class Attendance {
     @Id
     @Indexed
     private UUID attendanceId;
+    @Indexed
     private UUID studentId;
     private UUID courseId;
     private LocalDate classDate;
