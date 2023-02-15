@@ -8,20 +8,21 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.redis.core.RedisHash;
 import org.springframework.data.redis.core.index.Indexed;
 
+import java.time.LocalDate;
 import java.util.UUID;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@RedisHash("student")
-public class Student {
+@RedisHash("attendance")
+public class Attendance {
 
     @Id
     @Indexed
+    private UUID attendanceId;
     private UUID studentId;
-    private String fullName;
-
-    @Indexed
     private UUID courseId;
+    private LocalDate classDate;
+    private Boolean attendanceStatus;
 }
