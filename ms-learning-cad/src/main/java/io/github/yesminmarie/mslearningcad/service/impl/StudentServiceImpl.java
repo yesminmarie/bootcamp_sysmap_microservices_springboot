@@ -36,11 +36,16 @@ public class StudentServiceImpl implements StudentService {
         try{
             courseControllerClient.getCourseId(createStudentInput.getCourseId());
 
-            Student student = modelMapper.map(createStudentInput, Student.class);
+            Student student = new Student();
             student.setStudentId(UUID.randomUUID());
             student.setStatus(true);
             student.setCreatedOn(LocalDate.now());
-            studentRepository.save(student);
+            student.setCourseId(createStudentInput.getCourseId());
+            student.setDocument(createStudentInput.getDocument());
+            student.setFirstName(createStudentInput.getFirstName());
+            student.setLastName(createStudentInput.getLastName());
+            student.setBirthDate(createStudentInput.getBirthDate());
+            studentRepository.insert(student);
             eventService.sendEventToKafka(student);
             return modelMapper.map(student, CreateStudentResult.class);
 
